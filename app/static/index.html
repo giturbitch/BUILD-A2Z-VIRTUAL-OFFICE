@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual AI Office Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-running {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-idle {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .agent-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .agent-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #e2e3e5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d5d6d9;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 15px 0;
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tasks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .tasks-table thead {
+            background: #f8f9fa;
+        }
+
+        .tasks-table th,
+        .tasks-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tasks-table th {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .tasks-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Virtual AI Office</h1>
+            <p class="subtitle">Autonomous Agent Dashboard</p>
+        </header>
+
+        <div id="alert" style="margin-bottom: 20px;"></div>
+
+        <div class="grid">
+            <!-- Agent Status Card -->
+            <div class="card">
+                <div class="card-title">
+                    🔧 Agent Status
+                    <span id="health-status" class="status-badge status-idle">Loading...</span>
+                </div>
+                <div class="agent-list" id="agent-status-list">
+                    <div style="text-align: center;">
+                        <div class="loading"></div>
+                        <p style="margin-top: 10px; color: #666;">Loading agents...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card">
+                <div class="card-title">📊 Today's Activity</div>
+                <div class="stat-label">Content Posted</div>
+                <div class="stat-value" id="content-posted">0</div>
+                <div class="stat-label">Leads Tracked</div>
+                <div class="stat-value" id="leads-tracked">0</div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-title">⚡ Quick Actions</div>
+                <div class="agent-list">
+                    <button class="btn btn-primary" onclick="runAgent('social_media')">
+                        📱 Run Social Media Agent Now
+                    </button>
+                    <button class="btn btn-primary" onclick="runAgent('website')">
+                        🌐 Run Website Agent Now
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshData()">
+                        🔄 Refresh Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks History Card -->
+        <div class="card">
+            <div class="card-title">📋 Recent Tasks</div>
+            <table class="tasks-table">
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Task Type</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-body">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <div class="loading" style="margin: 20px auto;"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function getAgentStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/agents/status`);
+                const data = await response.json();
+                displayAgentStatus(data);
+            } catch (error) {
+                showAlert('Error fetching agent status: ' + error.message, 'error');
+            }
+        }
+
+        function displayAgentStatus(status) {
+            const list = document.getElementById('agent-status-list');
+            const healthStatus = document.getElementById('health-status');
+
+            let html = '';
+            for (const [name, info] of Object.entries(status)) {
+                const lastRun = info.last_run ? new Date(info.last_run).toLocaleString() : 'Never';
+                html += `
+                    <div class="agent-item">
+                        <div class="agent-info">
+                            <div class="agent-name">📌 ${capitalizeWords(name)}</div>
+                            <div class="agent-time">Last run: ${lastRun}</div>
+                        </div>
+                        <button class="btn btn-primary btn-small" onclick="runAgent('${name}')">
+                            Run Now
+                        </button>
+                    </div>
+                `;
+            }
+
+            list.innerHTML = html;
+            healthStatus.className = 'status-badge status-running';
+            healthStatus.textContent = 'Running';
+        }
+
+        async function runAgent(agentName) {
+            try {
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = 'Running...';
+
+                const response = await fetch(`${API_BASE}/agents/${agentName}/run`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) throw new Error('Agent run failed');
+
+                const result = await response.json();
+                showAlert(`${capitalizeWords(agentName)} executed successfully!`, 'success');
+                setTimeout(() => {
+                    getAgentStatus();
+                    getTasks();
+                }, 1000);
+            } catch (error) {
+                showAlert('Error running agent: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Run Now';
+            }
+        }
+
+        async function getTasks() {
+            try {
+                const response = await fetch(`${API_BASE}/tasks?limit=10`);
+                const tasks = await response.json();
+                displayTasks(tasks);
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            }
+        }
+
+        function displayTasks(tasks) {
+            const tbody = document.getElementById('tasks-body');
+
+            if (!tasks || tasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No tasks yet</td></tr>';
+                return;
+            }
+
+            let html = tasks.map(task => `
+                <tr>
+                    <td>${capitalizeWords(task.agent_name)}</td>
+                    <td>${task.task_type || 'N/A'}</td>
+                    <td><span class="status-badge status-${task.status}">${task.status}</span></td>
+                    <td>${new Date(task.created_at).toLocaleString()}</td>
+                    <td>${task.result ? task.result.substring(0, 50) + '...' : 'N/A'}</td>
+                </tr>
+            `).join('');
+
+            tbody.innerHTML = html;
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            const className = type === 'success' ? 'success-message' : 'error-message';
+            alert.innerHTML = `<div class="${className}">${message}</div>`;
+            setTimeout(() => {
+                alert.innerHTML = '';
+            }, 5000);
+        }
+
+        function capitalizeWords(str) {
+            return str
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        function refreshData() {
+            getAgentStatus();
+            getTasks();
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshData, 30000);
+
+        // Initial load
+        refreshData();
+    </script>
+</body>
+</html>
