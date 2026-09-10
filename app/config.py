@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     # API Keys
     ghl_api_key: str
     ghl_location_id: Optional[str] = None
+    discord_token: Optional[str] = None
 
     # Social Media
     instagram_username: Optional[str] = None
