@@ -7,7 +7,7 @@ selenium==4.15.2
 sqlalchemy==2.0.23
 aiohttp==3.9.1
 schedule==1.2.0
-pydantic==2.5.0
+pydantic==2.9.0
 pydantic-settings==2.1.0
 python-multipart==0.0.6
 requests==2.31.0
