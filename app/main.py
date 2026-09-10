@@ -39,7 +39,7 @@ class AgentStatusResponse(BaseModel):
 @app.on_event("startup")
 async def startup_event():
     """Start the scheduler on app startup."""
-    await scheduler.start()
+    asyncio.create_task(scheduler.start())
     logger.info("Virtual AI Office started")
 
 @app.on_event("shutdown")
