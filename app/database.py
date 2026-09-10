@@ -21,7 +21,7 @@ class AgentTask(Base):
     next_run = Column(DateTime, nullable=True)
     result = Column(Text, nullable=True)
     error = Column(Text, nullable=True)
-    metadata = Column(JSON, nullable=True)
+    task_metadata = Column(JSON, nullable=True)
 
 class AgentSchedule(Base):
     __tablename__ = "agent_schedules"
