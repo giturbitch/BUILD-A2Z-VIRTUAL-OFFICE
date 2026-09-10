@@ -7,7 +7,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.config import settings
-from app.database import get_db, AgentTask
+from app.database import get_db, AgentTask, ContentLog
 from app.scheduler import AgentScheduler
 
 logger = logging.getLogger(__name__)
@@ -91,6 +91,15 @@ async def get_task_detail(task_id: int, db: Session = Depends(get_db)):
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
+
+@app.get("/content")
+async def get_content_logs(limit: int = 50, platform: str = None, db: Session = Depends(get_db)):
+    """Get generated content logs."""
+    query = db.query(ContentLog).order_by(ContentLog.created_at.desc())
+    if platform:
+        query = query.filter(ContentLog.platform == platform)
+    content = query.limit(limit).all()
+    return content
 
 @app.get("/")
 async def root():
