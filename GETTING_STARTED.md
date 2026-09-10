@@ -38,18 +38,32 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Step 2: Configure Environment
+### Step 2: Install & Run Ollama
+```bash
+# Install Ollama (macOS/Linux)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Start Ollama in background
+ollama serve &
+
+# Pull Llama 3.1 model (one-time download)
+ollama pull llama3.1
+```
+
+### Step 3: Configure Environment
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your actual keys:
+Edit `.env` with your API keys:
 ```
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+LLM_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.1
 GHL_API_KEY=pit-74d72ffb-b759-46ec-bf64-8215b261601d
 ```
 
-### Step 3: Start the Server
+### Step 4: Start the Server
 ```bash
 python run.py
 ```
@@ -67,7 +81,7 @@ You'll see:
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-### Step 4: Access Your Dashboard
+### Step 5: Access Your Dashboard
 Open in browser:
 - **Dashboard**: http://localhost:8000/dashboard
 - **API Docs**: http://localhost:8000/docs
@@ -323,8 +337,10 @@ I can:
 
 ## Quick Checklist
 
+- [ ] Install Ollama with `ollama serve` running
+- [ ] Run `ollama pull llama3.1` to download model
 - [ ] Run `./setup.sh` to install dependencies
-- [ ] Edit `.env` with your API keys
+- [ ] Edit `.env` with Ollama configuration
 - [ ] Run `python run.py` to start server
 - [ ] Visit http://localhost:8000/dashboard
 - [ ] Test by clicking "Run Social Media Agent Now"

@@ -12,7 +12,7 @@ This is an autonomous AI agent platform for a SaaS agency. It runs independent a
 
 - **Backend**: Python 3.9+, FastAPI, SQLAlchemy
 - **Frontend**: HTML/CSS/JavaScript (simple dashboard)
-- **AI**: Anthropic Claude API
+- **AI**: Llama 3.1 via Ollama (local, free, no API costs)
 - **Automation**: Playwright, Selenium
 - **Database**: SQLite (dev), PostgreSQL (production)
 
@@ -36,7 +36,13 @@ requirements.txt    # Dependencies
 
 ## Running the Project
 
-1. **Setup**:
+1. **Install Ollama** (one-time):
+   ```bash
+   curl -fsSL https://ollama.ai/install.sh | sh
+   ollama pull llama3.1
+   ```
+
+2. **Setup**:
    ```bash
    python -m venv venv
    source venv/bin/activate
@@ -44,18 +50,17 @@ requirements.txt    # Dependencies
    cp .env.example .env
    ```
 
-2. **Configure** `.env` with your API keys:
-   ```
-   ANTHROPIC_API_KEY=your_key
-   GHL_API_KEY=your_key
+3. **Start Ollama** (in a separate terminal):
+   ```bash
+   ollama serve
    ```
 
-3. **Run**:
+4. **Run**:
    ```bash
    python run.py
    ```
 
-4. **Access**:
+5. **Access**:
    - Dashboard: http://localhost:8000/dashboard
    - API Docs: http://localhost:8000/docs
 

@@ -2,8 +2,13 @@ from pydantic_settings import BaseSettings
 from typing import Optional
 
 class Settings(BaseSettings):
+    # LLM Configuration
+    llm_provider: str = "ollama"  # ollama or anthropic
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3.1"
+    anthropic_api_key: Optional[str] = None
+
     # API Keys
-    anthropic_api_key: str
     ghl_api_key: str
     ghl_location_id: Optional[str] = None
 
