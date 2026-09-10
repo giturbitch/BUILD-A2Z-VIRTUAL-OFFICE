@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from playwright.async_api import async_playwright
 from app.agents.base_agent import BaseAgent
 from app.config import settings
 
@@ -36,18 +35,8 @@ class WebsiteAgent(BaseAgent):
     async def create_website(self, client_info: dict) -> dict:
         """Create a new website via GoHighLevel browser automation."""
         try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                page = await browser.new_page()
-
-                # Navigate to GoHighLevel
-                await page.goto("https://app.gohighlevel.com")
-
-                # TODO: Implement login and website creation workflow
-                logger.info(f"Creating website for client: {client_info.get('name')}")
-
-                await browser.close()
-                return {"status": "created", "client": client_info}
+            logger.info(f"Creating website for client: {client_info.get('name')} - browser automation not yet implemented")
+            return {"status": "pending", "client": client_info, "note": "Awaiting Playwright implementation"}
         except Exception as e:
             logger.error(f"Website creation failed: {str(e)}")
             return {"status": "failed", "error": str(e)}
